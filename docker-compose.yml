@@ -1,0 +1,49 @@
+services:
+  # ----------  DEV: Vite dev server with HMR  ----------
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules  # use container node_modules
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env.dev
+    command: pnpm run dev -- --host 0.0.0.0
+    profiles:
+      - dev
+
+  # ----------  QA: Built app served by nginx  ----------
+  app-qa:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: serve
+      args:
+        BUILD_MODE: qa
+    ports:
+      - "8080:80"
+    env_file:
+      - .env.qa
+    profiles:
+      - qa
+
+  # ----------  PROD: Built app served by nginx  ----------
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: serve
+      args:
+        BUILD_MODE: production
+    ports:
+      - "80:80"
+    env_file:
+      - .env.production
+    profiles:
+      - prod
