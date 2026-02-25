@@ -59,4 +59,4 @@ jobs:
         run: pnpm run test
 
       - name: Build (mode: ${{ steps.set-mode.outputs.mode }})
-        run: pnpm run build:${{ steps.set-mode.outputs.mode }}:skip-check
+        run: "pnpm run build:${{ steps.set-mode.outputs.mode }}:skip-check"
