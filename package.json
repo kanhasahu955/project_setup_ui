@@ -1,17 +1,24 @@
 {
   "name": "live_bhoomi_ui",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build --mode production",
+    "build:production": "tsc -b && vite build --mode production",
+    "build:qa": "tsc -b && vite build --mode qa",
+    "build:dev": "tsc -b && vite build --mode dev",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:major": "npm version major --no-git-tag-version"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@tailwindcss/vite": "^4.2.0",
     "antd": "^6.3.1",

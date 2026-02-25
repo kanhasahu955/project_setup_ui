@@ -3,9 +3,6 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { PATHS } from '@/routes/paths'
 
-/**
- * Private route: requires authenticated user. Redirects to login otherwise.
- */
 function PrivateRouteComponent() {
   const { isAuthenticated } = useAuth()
   const location = useLocation()

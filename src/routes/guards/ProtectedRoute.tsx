@@ -5,7 +5,6 @@ import { PATHS } from '@/routes/paths'
 import type { AuthRole } from '@/@types/auth.type'
 
 export interface ProtectedRouteProps {
-  /** User must have at least one of these roles. */
   allowedRoles: readonly AuthRole[]
 }
 

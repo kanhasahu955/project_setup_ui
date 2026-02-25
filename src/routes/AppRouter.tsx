@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { map } from '@/utils/lodash.util'
+import { AppLayout } from '@/layout/AppLayout'
 import { PublicRoute } from '@/routes/guards/PublicRoute'
 import { PrivateRoute } from '@/routes/guards/PrivateRoute'
 import { ProtectedRoute } from '@/routes/guards/ProtectedRoute'
@@ -44,6 +45,7 @@ export function AppRouter() {
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
+        <Route element={<AppLayout />}>
         <Route element={<PublicRoute />}>
           <Route path={PATHS.HOME} element={<HomePage />} />
           <Route path={PATHS.LOGIN} element={<LoginPage />} />
@@ -64,6 +66,7 @@ export function AppRouter() {
         ))}
 
         <Route path="*" element={<Navigate to={PATHS.HOME} replace />} />
+        </Route>
       </Routes>
     </Suspense>
   )

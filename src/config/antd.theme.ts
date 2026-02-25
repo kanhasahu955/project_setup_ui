@@ -1,12 +1,13 @@
 import type { ThemeConfig } from 'antd'
+import { getTailwindHex } from '@/utils/tailwindColors.util'
 
 export const antdTheme: ThemeConfig = {
   token: {
-    colorPrimary: '#1677ff',
-    colorSuccess: '#52c41a',
-    colorWarning: '#faad14',
-    colorError: '#ff4d4f',
-    colorInfo: '#1677ff',
+    colorPrimary: getTailwindHex('blue', 500),
+    colorSuccess: getTailwindHex('green', 500),
+    colorWarning: getTailwindHex('amber', 500),
+    colorError: getTailwindHex('red', 500),
+    colorInfo: getTailwindHex('sky', 500),
     borderRadius: 8,
     fontFamily: 'inherit',
   },
@@ -14,6 +15,7 @@ export const antdTheme: ThemeConfig = {
     Button: {
       controlHeight: 40,
       fontWeight: 500,
+      colorPrimaryHover: getTailwindHex('blue', 600),
     },
     Input: {
       controlHeight: 40,

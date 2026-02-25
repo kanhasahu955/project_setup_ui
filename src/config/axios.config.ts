@@ -6,6 +6,7 @@ import axios, {
     type InternalAxiosRequestConfig,
 } from "axios"
 import type { ApiErrorPayload } from "@/@types/client.type"
+import { toastStore } from "@/store/toast.store"
 import { safeGet, firstDefined } from "@/utils/lodash.util"
 import { ENV_BASE_URL, DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS, FALLBACK_ERROR_MESSAGE, DEFAULT_JSON_HEADERS } from "@/constants"
 
@@ -38,7 +39,9 @@ function onResponseFulfilled(response: AxiosResponse): AxiosResponse {
 }
 
 function onResponseRejected(error: AxiosError<ApiErrorPayload>): Promise<never> {
-    return Promise.reject(normalizeError(error))
+    const payload = normalizeError(error)
+    toastStore.getState().showError(payload.message)
+    return Promise.reject(payload)
 }
 
 function createHttpClient(): AxiosInstance {

@@ -7,26 +7,16 @@ import {
 } from "@/constants/seo"
 
 export interface SEOProps {
-  /** Page title (e.g. "Login" → "Login | Live Bhoomi"). */
   title?: string
-  /** Meta description. */
   description?: string
-  /** Canonical path or full URL. */
   canonical?: string
-  /** Open Graph image URL. */
   ogImage?: string
-  /** Open Graph type (default: website). */
   ogType?: "website" | "article"
-  /** When true, add noindex,nofollow (login, dashboard, admin). */
   noIndex?: boolean
 }
 
 const defaultOgType = "website" as const
 
-/**
- * SEO-friendly document head using React 19 in-document metadata.
- * Renders <title>, <meta>, <link> so they are applied to the document.
- */
 export function SEO({
   title,
   description = DEFAULT_DESCRIPTION,

@@ -2,10 +2,10 @@ import type { AxiosInstance } from "axios"
 import { httpClient } from "@/config/axios.config"
 import { MULTIPART_OMIT_HEADER } from "@/constants"
 import { deepMerge, omit } from "@/utils/lodash.util"
-
 import type { ApiResponse, RequestConfig } from "@/@types/client.type"
-export type { ApiResponse, RequestConfig }
-export type { FormDataPayload, FormDataValue } from "@/utils/formData.util"
+
+/** Query params for GET (and DELETE) requests. */
+export type RequestParams = Record<string, string | number | boolean | undefined | null>
 
 export class Request {
     readonly #client: AxiosInstance
@@ -23,8 +23,9 @@ export class Request {
         return this.mergeConfig(config, { headers: headers as RequestConfig["headers"] })
     }
 
-    async get<T>(url: string, config?: RequestConfig): ApiResponse<T> {
-        const { data } = await this.#client.get<T>(url, this.mergeConfig(config))
+    async get<T>(url: string, params?: RequestParams, config?: RequestConfig): ApiResponse<T> {
+        const merged = this.mergeConfig(config, params != null ? { params } : undefined)
+        const { data } = await this.#client.get<T>(url, merged)
         return data
     }
 
@@ -57,8 +58,9 @@ export class Request {
 const request = new Request(httpClient)
 
 
-export const get = <T>(url: string, config?: RequestConfig): ApiResponse<T> =>
-    request.get<T>(url, config)
+/** GET with optional query params. For config only use get(url, undefined, config). */
+export const get = <T>(url: string, params?: RequestParams, config?: RequestConfig): ApiResponse<T> =>
+    request.get<T>(url, params, config)
 
 export const post = <TReq, TRes>(url: string, body: TReq, config?: RequestConfig): ApiResponse<TRes> =>
     request.post<TReq, TRes>(url, body, config)
