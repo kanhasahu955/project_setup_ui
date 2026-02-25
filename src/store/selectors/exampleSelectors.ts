@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { groupBy } from 'lodash'
+import { groupBy, firstCharUpper } from '@/utils/lodash.util'
 import type { RootState } from '@/store/store'
 import type { ExampleItem } from '@/store/slices/exampleSlice'
 
@@ -25,6 +25,6 @@ export type GroupedExampleItems = Record<string, ExampleItem[]>
 export const selectItemsGroupedByFirstLetter = createSelector(
   [selectExampleItems],
   (items): GroupedExampleItems =>
-    groupBy(items, (item) => item.name.charAt(0).toUpperCase()),
+    groupBy(items, (item) => firstCharUpper(item.name)),
 )
 
