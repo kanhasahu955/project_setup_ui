@@ -1,32 +1,65 @@
-# Deploy on Vercel
+# Publish on Vercel with Git
 
-## One-time setup
+Deploy the app by connecting your GitHub repo to Vercel. Production deploys from your main branch; every push and PR gets a preview URL. Use **Git tags** and **GitHub Releases** for versioning (see [RELEASE.md](./RELEASE.md)).
 
-1. **Import project**  
-   In [Vercel](https://vercel.com), import your Git repo. Use the **live_bhoomi_ui** directory as the root if the repo is a monorepo.
+---
 
-2. **Build settings** (usually auto-detected from `vercel.json`)
-   - **Framework Preset:** Vite  
-   - **Build Command:** `pnpm run build`  
-   - **Output Directory:** `dist`  
-   - **Install Command:** `pnpm install`
+## 1. One-time setup
 
-3. **Environment variables**  
-   In Project → Settings → Environment Variables, add:
+### Connect GitHub to Vercel
 
-   | Name                | Value                          | Environments   |
-   |---------------------|--------------------------------|----------------|
-   | `VITE_API_BASE_URL` | `https://your-api.com/api/v1`  | Production    |
+1. Go to [vercel.com](https://vercel.com) and sign in (use **Continue with GitHub**).
+2. Click **Add New…** → **Project**.
+3. **Import** your Git repository (e.g. `your-username/live_bhoomi`).
+4. Configure the project:
+   - **Root Directory:** If the repo is only this app, leave as `.`. If the repo is a monorepo, set to `live_bhoomi_ui`.
+   - **Framework Preset:** Vite (auto-detected from `vercel.json`).
+   - **Build Command:** `pnpm run build` (or `pnpm run build:skip-check` if you skip the TypeScript check).
+   - **Output Directory:** `dist`.
+   - **Install Command:** `pnpm install`.
 
-   Use your real backend URL. For Preview (PR) builds you can set a different value or leave blank to use the default from code.
+### Environment variables
 
-## Deploy
+In the project: **Settings** → **Environment Variables**, add:
 
-- **Production:** Push to the production branch (e.g. `main`) or create a release tag.  
-- **Preview:** Every push/PR gets a preview URL.
+| Name                 | Value                          | Environments   |
+|----------------------|--------------------------------|----------------|
+| `VITE_API_BASE_URL`  | `https://your-backend.com/api/v1` | Production (and Preview if you want) |
 
-## Monorepo
+Use your real API URL. Leave blank for Preview to use the default from code.
 
-If the repo root is above `live_bhoomi_ui`:
+Click **Deploy** to run the first build.
 
-- Set **Root Directory** to `live_bhoomi_ui` in Vercel project settings.
+---
+
+## 2. How deploys work
+
+| Trigger              | What happens |
+|----------------------|--------------|
+| Push to **production branch** (e.g. `main`) | Vercel builds and updates **Production** (your live URL). |
+| Push to other branch | Vercel builds and gives a **Preview** URL. |
+| Open a **Pull Request** | Vercel builds and attaches a **Preview** URL to the PR. |
+
+You do **not** need to create a Git tag for Vercel to deploy. Tags are for **GitHub Releases** (version history and artifacts). Typical flow:
+
+1. Merge to `main` → Vercel deploys production.
+2. Create a tag (e.g. `v1.1.0`) and push → [Deploy workflow](.github/workflows/deploy.yml) creates a **GitHub Release** with the built files.
+
+---
+
+## 3. Using tags and GitHub Releases
+
+- **Tag:** e.g. `v1.1.0`. Push with: `git push origin v1.1.0` (or `git push origin main --tags`).
+- **GitHub Release:** Created automatically by the workflow when you push a tag. See [RELEASE.md](./RELEASE.md) for the full flow (bump version → commit → tag → push).
+
+Your live app on Vercel is driven by the **branch** (usually `main`). Tags/releases are for versioning and release notes, not for triggering Vercel.
+
+---
+
+## 4. Optional: build without type check
+
+If you use the “skip type check” build locally, set in Vercel:
+
+- **Build Command:** `pnpm run build:skip-check`
+
+Otherwise keep **Build Command** as `pnpm run build`.
