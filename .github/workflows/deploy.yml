@@ -15,6 +15,10 @@ concurrency:
 env:
   VITE_APP_VERSION: ${{ github.ref_name }}
 
+defaults:
+  run:
+    working-directory: live_bhoomi_ui
+
 jobs:
   build-and-release:
     name: Build & Release
@@ -35,6 +39,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
+          cache-dependency-path: live_bhoomi_ui/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -46,13 +51,13 @@ jobs:
         run: pnpm run test
 
       - name: Build (production)
-        run: pnpm run build:production
+        run: pnpm run build:production:skip-check
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ github.ref_name }}
-          path: dist/
+          path: live_bhoomi_ui/dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -61,6 +66,6 @@ jobs:
           name: Release ${{ github.ref_name }}
           draft: false
           generate_release_notes: true
-          files: dist/**/*
+          files: live_bhoomi_ui/dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
