@@ -32,9 +32,18 @@ jobs:
         id: set-mode
         run: |
           case "${{ github.ref }}" in
-            refs/heads/main|refs/heads/master) echo "mode=production" >> $GITHUB_OUTPUT ;;
-            refs/heads/develop|refs/heads/qa)     echo "mode=qa" >> $GITHUB_OUTPUT ;;
-            *)                                     echo "mode=production" >> $GITHUB_OUTPUT ;;
+            refs/heads/main|refs/heads/master)
+              echo "mode=production" >> $GITHUB_OUTPUT
+              echo "build_script=build:production:skip-check" >> $GITHUB_OUTPUT
+              ;;
+            refs/heads/develop|refs/heads/qa)
+              echo "mode=qa" >> $GITHUB_OUTPUT
+              echo "build_script=build:qa:skip-check" >> $GITHUB_OUTPUT
+              ;;
+            *)
+              echo "mode=production" >> $GITHUB_OUTPUT
+              echo "build_script=build:production:skip-check" >> $GITHUB_OUTPUT
+              ;;
           esac
 
       - name: Setup pnpm
@@ -59,4 +68,4 @@ jobs:
         run: pnpm run test
 
       - name: Build (mode: ${{ steps.set-mode.outputs.mode }})
-        run: "pnpm run build:${{ steps.set-mode.outputs.mode }}:skip-check"
+        run: pnpm run ${{ steps.set-mode.outputs.build_script }}
