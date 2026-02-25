@@ -13,10 +13,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# If repo root is the app (no live_bhoomi_ui subfolder), set working-directory to .
-defaults:
-  run:
-    working-directory: live_bhoomi_ui
+# Repo root = app. For monorepo, set working-directory to live_bhoomi_ui and cache-dependency-path to live_bhoomi_ui/pnpm-lock.yaml
 
 jobs:
   validate:
@@ -34,15 +31,15 @@ jobs:
           case "${{ github.ref }}" in
             refs/heads/main|refs/heads/master)
               echo "mode=production" >> $GITHUB_OUTPUT
-              echo "build_script=build:production:skip-check" >> $GITHUB_OUTPUT
+              echo "build_script=build" >> $GITHUB_OUTPUT
               ;;
             refs/heads/develop|refs/heads/qa)
               echo "mode=qa" >> $GITHUB_OUTPUT
-              echo "build_script=build:qa:skip-check" >> $GITHUB_OUTPUT
+              echo "build_script=build:qa" >> $GITHUB_OUTPUT
               ;;
             *)
               echo "mode=production" >> $GITHUB_OUTPUT
-              echo "build_script=build:production:skip-check" >> $GITHUB_OUTPUT
+              echo "build_script=build" >> $GITHUB_OUTPUT
               ;;
           esac
 
@@ -56,7 +53,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: live_bhoomi_ui/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

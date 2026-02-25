@@ -15,9 +15,7 @@ concurrency:
 env:
   VITE_APP_VERSION: ${{ github.ref_name }}
 
-defaults:
-  run:
-    working-directory: live_bhoomi_ui
+# Repo root = app. For monorepo, add defaults.run.working-directory: live_bhoomi_ui and use live_bhoomi_ui/dist for artifact/release paths.
 
 jobs:
   build-and-release:
@@ -39,7 +37,7 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-          cache-dependency-path: live_bhoomi_ui/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -51,13 +49,13 @@ jobs:
         run: pnpm run test
 
       - name: Build (production)
-        run: pnpm run build:production:skip-check
+        run: pnpm run build
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist-${{ github.ref_name }}
-          path: live_bhoomi_ui/dist/
+          path: dist/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -66,6 +64,6 @@ jobs:
           name: Release ${{ github.ref_name }}
           draft: false
           generate_release_notes: true
-          files: live_bhoomi_ui/dist/**/*
+          files: dist/**/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
