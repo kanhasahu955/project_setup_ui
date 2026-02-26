@@ -1,0 +1,11 @@
+# Response: REST-style envelope (success, message, data, statusCode)
+mutation ResendOtp($input: ResendOtpInput!) {
+  resendOtp(input: $input) {
+    success
+    message
+    statusCode
+    data {
+      message
+    }
+  }
+}

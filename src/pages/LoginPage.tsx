@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react'
 import { Form, Input, Checkbox } from 'antd'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { selectAuth } from '@/store/selectors/auth.selectors'
 import {
   login as loginThunk,
   register as registerThunk,
@@ -27,8 +28,8 @@ const inputClassName =
 export function LoginPage() {
   const dispatch = useAppDispatch()
   const { navigateAfterLogin } = useLoginRedirect(PATHS.HOME)
-  const loading = useAppSelector((s) => s.auth.loading)
-  const error = useAppSelector((s) => s.auth.error)
+  const auth = useAppSelector(selectAuth)
+  const { loading, error } = auth
 
   const [activeTab, setActiveTab] = useState<AuthTab>('login')
   const [registerEmailSent, setRegisterEmailSent] = useState<string | null>(null)

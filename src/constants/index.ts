@@ -28,6 +28,8 @@ function resolveApiUrl(): string {
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000
+/** Longer timeout for production (e.g. Render cold start can take 30–60s). */
+const PRODUCTION_TIMEOUT_MS = 60_000
 const FALLBACK_ERROR_MESSAGE = "Something went wrong. Please try again."
 const DEFAULT_JSON_HEADERS = {
     "Content-Type": "application/json",
@@ -72,6 +74,7 @@ export {
   DEFAULT_GRAPHQL_URL,
   resolveGraphQLUrl,
   DEFAULT_TIMEOUT_MS,
+  PRODUCTION_TIMEOUT_MS,
   FALLBACK_ERROR_MESSAGE,
   DEFAULT_JSON_HEADERS,
   MULTIPART_OMIT_HEADER,

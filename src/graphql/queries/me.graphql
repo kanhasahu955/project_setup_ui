@@ -1,0 +1,24 @@
+query Me {
+  me {
+    id
+    name
+    email
+    phone
+    role
+    isEmailVerified
+    isPhoneVerified
+    avatar
+    lastLogin
+    kyc {
+      kycStatus
+      isAadharVerified
+      isPanVerified
+    }
+    profile {
+      id
+      bio
+      companyName
+      designation
+    }
+  }
+}

@@ -1,7 +1,6 @@
 import { createSlice, type AnyAction, type PayloadAction } from "@reduxjs/toolkit"
 import { merge } from "@/utils/lodash.util"
-import type { AuthUser, AuthRole, SetAuthPayload, SetAuthUserInput } from "@/@types/auth.type"
-import type { LoginResponse } from "@/services/auth.api.types"
+import type { AuthUser, AuthRole, SetAuthPayload, SetAuthUserInput, LoginResponse } from "@/@types/auth.type"
 
 const isAuthPending = (a: AnyAction) =>
   a.type === "auth/register/pending" || a.type === "auth/verifyOtp/pending" || a.type === "auth/resendOtp/pending" || a.type === "auth/login/pending"

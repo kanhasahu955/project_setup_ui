@@ -5,7 +5,7 @@ import { App as AntdApp, ConfigProvider } from 'antd'
 import { Provider } from 'react-redux'
 import { ApolloProvider } from '@apollo/client/react'
 import { store } from '@/store/store'
-import { createApolloClient } from '@/config/apollo.config'
+import { createApolloClient, setApolloClient } from '@/config/apollo.config'
 import { antdTheme } from '@/config/antd.theme'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { ToastListener } from '@/components/Toast'
@@ -18,6 +18,7 @@ const rootEl = document.getElementById('root')
 if (!rootEl) throw new Error('Root element #root not found')
 
 const apolloClient = createApolloClient(() => store.getState().auth.token ?? null)
+setApolloClient(apolloClient)
 
 createRoot(rootEl).render(
   <StrictMode>

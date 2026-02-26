@@ -1,97 +1,26 @@
 import { gql } from "@apollo/client"
 
+import meQuery from "@/graphql/queries/me.graphql?raw"
+import healthQuery from "@/graphql/queries/health.graphql?raw"
+import registerMutation from "@/graphql/mutations/register.graphql?raw"
+import verifyOtpMutation from "@/graphql/mutations/verifyOtp.graphql?raw"
+import resendOtpMutation from "@/graphql/mutations/resendOtp.graphql?raw"
+import loginMutation from "@/graphql/mutations/login.graphql?raw"
+
 /** Current authenticated user (requires Bearer token). */
-export const ME = gql`
-  query Me {
-    me {
-      id
-      name
-      email
-      phone
-      role
-      isEmailVerified
-      isPhoneVerified
-      avatar
-      lastLogin
-      kyc {
-        kycStatus
-        isAadharVerified
-        isPanVerified
-      }
-      profile {
-        id
-        bio
-        companyName
-        designation
-      }
-    }
-  }
-`
+export const ME = gql(meQuery)
 
 /** Health check (no auth required). */
-export const HEALTH = gql`
-  query Health($detailed: Boolean) {
-    health(detailed: $detailed) {
-      status
-      uptime
-      timestamp
-    }
-  }
-`
+export const HEALTH = gql(healthQuery)
 
-// ============ Auth mutations (align with fastify_backend GraphQL schema) ============
+/** Register: sends OTP to email. */
+export const REGISTER = gql(registerMutation)
 
-export const REGISTER = gql`
-  mutation Register($input: RegisterInput!) {
-    register(input: $input) {
-      message
-      email
-    }
-  }
-`
+/** Verify OTP: completes registration, returns user + token. */
+export const VERIFY_OTP = gql(verifyOtpMutation)
 
-export const VERIFY_OTP = gql`
-  mutation VerifyOtp($input: VerifyOtpInput!) {
-    verifyOtp(input: $input) {
-      user {
-        id
-        name
-        email
-        phone
-        role
-        isEmailVerified
-        isPhoneVerified
-        avatar
-        lastLogin
-      }
-      token
-    }
-  }
-`
+/** Resend OTP to email. */
+export const RESEND_OTP = gql(resendOtpMutation)
 
-export const RESEND_OTP = gql`
-  mutation ResendOtp($input: ResendOtpInput!) {
-    resendOtp(input: $input) {
-      message
-    }
-  }
-`
-
-export const LOGIN = gql`
-  mutation Login($input: LoginInput!) {
-    login(input: $input) {
-      user {
-        id
-        name
-        email
-        phone
-        role
-        isEmailVerified
-        isPhoneVerified
-        avatar
-        lastLogin
-      }
-      token
-    }
-  }
-`
+/** Login: returns user + token. */
+export const LOGIN = gql(loginMutation)

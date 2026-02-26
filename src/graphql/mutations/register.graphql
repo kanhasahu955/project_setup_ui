@@ -1,0 +1,12 @@
+# Response: REST-style envelope (success, message, data, statusCode)
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    success
+    message
+    statusCode
+    data {
+      message
+      email
+    }
+  }
+}

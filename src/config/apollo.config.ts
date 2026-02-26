@@ -1,5 +1,6 @@
+import type { ApolloClient } from "@apollo/client/core"
 import {
-  ApolloClient,
+  ApolloClient as ApolloClientConstructor,
   InMemoryCache,
   HttpLink,
   from,
@@ -9,12 +10,25 @@ import { resolveGraphQLUrl } from "@/constants"
 
 export type GetToken = () => string | null
 
+let apolloClientInstance: ApolloClient<unknown> | null = null
+
+/** Set the client after creation (e.g. in main.tsx). Used by Redux thunks for auth. */
+export function setApolloClient(client: ApolloClient<unknown>): void {
+  apolloClientInstance = client
+}
+
+/** Get Apollo client for use outside React (e.g. Redux thunks). Throws if not set. */
+export function getApolloClient(): ApolloClient<unknown> {
+  if (!apolloClientInstance) throw new Error("Apollo client not initialized")
+  return apolloClientInstance
+}
+
 /**
  * Create Apollo Client for the Live Bhoomi GraphQL API.
  * Pass a getToken function that returns the current JWT (e.g. from Redux auth state).
  * Backend expects: Authorization: Bearer <token>
  */
-export function createApolloClient(getToken: GetToken): ApolloClient {
+export function createApolloClient(getToken: GetToken): ApolloClient<unknown> {
   const httpLink = new HttpLink({
     uri: resolveGraphQLUrl(),
     fetchOptions: {
@@ -33,7 +47,7 @@ export function createApolloClient(getToken: GetToken): ApolloClient {
     }
   })
 
-  const client = new ApolloClient({
+  const client = new ApolloClientConstructor({
     link: from([authLink, httpLink]),
     cache: new InMemoryCache(),
     defaultOptions: {

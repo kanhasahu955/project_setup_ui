@@ -1,0 +1,22 @@
+# Response: REST-style envelope (success, message, data, statusCode)
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    success
+    message
+    statusCode
+    data {
+      user {
+        id
+        name
+        email
+        phone
+        role
+        isEmailVerified
+        isPhoneVerified
+        avatar
+        lastLogin
+      }
+      token
+    }
+  }
+}

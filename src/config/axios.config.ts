@@ -8,7 +8,7 @@ import axios, {
 import type { ApiErrorPayload } from "@/@types/client.type"
 import { toastStore } from "@/store/toast.store"
 import { safeGet, firstDefined } from "@/utils/lodash.util"
-import { ENV_BASE_URL, DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS, FALLBACK_ERROR_MESSAGE, DEFAULT_JSON_HEADERS } from "@/constants"
+import { ENV_BASE_URL, DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS, PRODUCTION_TIMEOUT_MS, FALLBACK_ERROR_MESSAGE, DEFAULT_JSON_HEADERS } from "@/constants"
 
 /** In dev use relative path so Vite proxy is used and Network tab shows frontend URL. */
 const getBaseURL = (): string => {
@@ -17,9 +17,16 @@ const getBaseURL = (): string => {
     return url.replace(/\/$/, "")
 }
 
+/** Production (e.g. Render) needs longer timeout for cold start; dev keeps 15s. */
+const getTimeout = (): number => {
+    const envMs = import.meta.env.VITE_API_TIMEOUT_MS
+    if (envMs != null && String(envMs).trim() !== "") return Number(envMs) || DEFAULT_TIMEOUT_MS
+    return import.meta.env.DEV ? DEFAULT_TIMEOUT_MS : PRODUCTION_TIMEOUT_MS
+}
+
 const defaultConfig: AxiosRequestConfig = {
     baseURL: getBaseURL(),
-    timeout: DEFAULT_TIMEOUT_MS,
+    timeout: getTimeout(),
     headers: {
         ...DEFAULT_JSON_HEADERS,
     },

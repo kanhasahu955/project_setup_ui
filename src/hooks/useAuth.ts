@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
+import { selectAuth } from '@/store/selectors/auth.selectors'
 import { setAuth, clearAuth } from '@/store/slices/authSlice'
 import { includes, some } from '@/utils/lodash.util'
 import type { AuthUser, AuthRole } from '@/@types/auth.type'
@@ -17,9 +18,7 @@ export interface UseAuthReturn {
 
 export function useAuth(): UseAuthReturn {
   const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.auth.user)
-  const token = useAppSelector((state) => state.auth.token)
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
+  const { user, token, isAuthenticated } = useAppSelector(selectAuth)
 
   const login = useCallback(
     (payload: SetAuthPayload) => {
