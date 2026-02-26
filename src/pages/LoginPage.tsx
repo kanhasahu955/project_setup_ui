@@ -43,9 +43,13 @@ export function LoginPage() {
       const { remember: _, ...loginPayload } = values
       dispatch(loginThunk(loginPayload))
         .unwrap()
-        .then(() => navigateAfterLogin())
-        .catch(() => {
-          // Error toast already shown by axios interceptor
+        .then((res) => {
+          toastStore.getState().showSuccess(res.message ?? 'Login successful')
+          navigateAfterLogin()
+        })
+        .catch((message: unknown) => {
+          const msg = typeof message === 'string' ? message : 'Login failed'
+          toastStore.getState().showError(msg)
         })
     },
     [dispatch, navigateAfterLogin],
@@ -59,8 +63,9 @@ export function LoginPage() {
           toastStore.getState().showSuccess(res.message ?? 'Verification code sent to your email.')
           setRegisterEmailSent(values.email)
         })
-        .catch(() => {
-          // Error toast already shown by axios interceptor
+        .catch((message: unknown) => {
+          const msg = typeof message === 'string' ? message : 'Registration failed'
+          toastStore.getState().showError(msg)
         })
     },
     [dispatch],
@@ -71,12 +76,13 @@ export function LoginPage() {
       const email = registerEmailSent ?? values.email
       dispatch(verifyOtpThunk({ ...values, email }))
         .unwrap()
-        .then(() => {
-          toastStore.getState().showSuccess('Email verified. Welcome!')
+        .then((res) => {
+          toastStore.getState().showSuccess(res.message ?? 'Email verified. Welcome!')
           navigateAfterLogin()
         })
-        .catch(() => {
-          // Error toast already shown by axios interceptor
+        .catch((message: unknown) => {
+          const msg = typeof message === 'string' ? message : 'Verification failed'
+          toastStore.getState().showError(msg)
         })
     },
     [dispatch, registerEmailSent, navigateAfterLogin],
@@ -87,8 +93,9 @@ export function LoginPage() {
     dispatch(resendOtpThunk({ email: registerEmailSent }))
       .unwrap()
       .then((res) => toastStore.getState().showSuccess(res.message ?? 'Code sent again.'))
-      .catch(() => {
-        // Error toast already shown by axios interceptor
+      .catch((message: unknown) => {
+        const msg = typeof message === 'string' ? message : 'Failed to resend OTP'
+        toastStore.getState().showError(msg)
       })
   }, [dispatch, registerEmailSent])
 
