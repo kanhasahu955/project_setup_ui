@@ -10,8 +10,15 @@ import { toastStore } from "@/store/toast.store"
 import { safeGet, firstDefined } from "@/utils/lodash.util"
 import { ENV_BASE_URL, DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS, FALLBACK_ERROR_MESSAGE, DEFAULT_JSON_HEADERS } from "@/constants"
 
+/** In dev use relative path so Vite proxy is used and Network tab shows frontend URL. */
+const getBaseURL = (): string => {
+    if (import.meta.env.DEV) return "/api/v1"
+    const url = firstDefined(import.meta.env[ENV_BASE_URL], DEFAULT_BASE_URL) as string
+    return url.replace(/\/$/, "")
+}
+
 const defaultConfig: AxiosRequestConfig = {
-    baseURL: firstDefined(import.meta.env[ENV_BASE_URL], DEFAULT_BASE_URL) as string,
+    baseURL: getBaseURL(),
     timeout: DEFAULT_TIMEOUT_MS,
     headers: {
         ...DEFAULT_JSON_HEADERS,

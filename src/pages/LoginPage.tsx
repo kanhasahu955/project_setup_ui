@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { Form, Input, Checkbox } from 'antd'
 import { useAppDispatch, useAppSelector } from '@/store/hooks'
-import { store } from '@/store/store'
 import {
   login as loginThunk,
   register as registerThunk,
@@ -45,25 +44,22 @@ export function LoginPage() {
         .unwrap()
         .then(() => navigateAfterLogin())
         .catch(() => {
-          const err = store.getState().auth.error
-          if (err) toastStore.getState().showError(err)
+          // Error toast already shown by axios interceptor
         })
     },
     [dispatch, navigateAfterLogin],
   )
 
   const handleRegisterFinish = useCallback(
-    (values: RegisterInput & { agencyCode?: string }) => {
-      const { agencyCode: _, ...payload } = values
-      dispatch(registerThunk(payload))
+    (values: RegisterInput) => {
+      dispatch(registerThunk(values))
         .unwrap()
         .then((res) => {
           toastStore.getState().showSuccess(res.message ?? 'Verification code sent to your email.')
           setRegisterEmailSent(values.email)
         })
         .catch(() => {
-          const err = store.getState().auth.error
-          if (err) toastStore.getState().showError(err)
+          // Error toast already shown by axios interceptor
         })
     },
     [dispatch],
@@ -79,8 +75,7 @@ export function LoginPage() {
           navigateAfterLogin()
         })
         .catch(() => {
-          const err = store.getState().auth.error
-          toastStore.getState().showError(err ?? 'Verification failed.')
+          // Error toast already shown by axios interceptor
         })
     },
     [dispatch, registerEmailSent, navigateAfterLogin],
@@ -92,8 +87,7 @@ export function LoginPage() {
       .unwrap()
       .then((res) => toastStore.getState().showSuccess(res.message ?? 'Code sent again.'))
       .catch(() => {
-        const err = store.getState().auth.error
-        if (err) toastStore.getState().showError(err)
+        // Error toast already shown by axios interceptor
       })
   }, [dispatch, registerEmailSent])
 
@@ -108,7 +102,7 @@ export function LoginPage() {
     <>
       <SEO title="Login" description="Sign in or register on Live Bhoomi." canonical={PATHS.LOGIN} noIndex />
       <AuthLayout rightContent={<AuthVisualPanel />}>
-        <div className="w-full max-w-md min-w-0 flex flex-col items-center [&_.ant-form]:w-full flex-1 min-h-0 overflow-hidden">
+        <div className="w-full max-w-md min-w-0 flex flex-col items-center [&_.ant-form]:w-full">
           {/* Mobile: house illustration at top */}
           <AuthMobileIllustration />
 
@@ -186,24 +180,13 @@ export function LoginPage() {
               <h1 className="text-lg font-bold text-slate-900 mb-0.5 mt-0 text-center w-full shrink-0">
                 {activeTab === 'login' ? 'Welcome Back' : 'Create an Account'}
               </h1>
-              <p className="text-slate-500 text-xs mb-2 text-center w-full shrink-0">
+              <p className="text-slate-500 text-xs mb-5 text-center w-full shrink-0">
                 {activeTab === 'login'
                   ? "Let's login to grab amazing deals."
                   : 'Join to find your perfect place.'}
               </p>
 
-              {/* Switch mode */}
-              <div className="mb-2 w-full flex justify-center shrink-0">
-                <Button
-                  htmlType="button"
-                  onClick={() => handleTabChange(activeTab === 'login' ? 'register' : 'login')}
-                  className="h-9 rounded-lg border border-slate-200 text-slate-700 hover:border-slate-300 hover:text-slate-800 font-medium text-sm w-full sm:w-auto"
-                >
-                  {activeTab === 'login' ? 'Sign Up' : 'Sign in'}
-                </Button>
-              </div>
-
-              {/* Login form — full width, centered */}
+              {/* Login form — gap below heading, centered */}
               {activeTab === 'login' && (
                 <>
                 <div className="w-full">
@@ -293,7 +276,7 @@ export function LoginPage() {
                 </>
               )}
 
-              {/* Sign Up form — full width, centered */}
+              {/* Sign Up form — gap below heading, centered */}
               {activeTab === 'register' && (
                 <div className="w-full">
                   <Form
@@ -355,13 +338,6 @@ export function LoginPage() {
                       className={inputClassName}
                     />
                   </FormField>
-                  <FormField label="Agency Code" name="agencyCode">
-                    <Input.Password
-                      placeholder="********"
-                      autoComplete="off"
-                      className={inputClassName}
-                    />
-                  </FormField>
                   <Form.Item className="mb-0 mt-2">
                     <Button
                       type="primary"
@@ -379,9 +355,29 @@ export function LoginPage() {
               )}
 
               <p className="text-center text-slate-500 text-xs mt-2 px-1 shrink-0">
-                {activeTab === 'login'
-                  ? "Don't have an account?"
-                  : 'Already have an account?'}
+                {activeTab === 'login' ? (
+                  <>
+                    Don&apos;t have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('register')}
+                      className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    Already have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={() => handleTabChange('login')}
+                      className="text-indigo-600 font-medium hover:text-indigo-700 hover:underline"
+                    >
+                      Sign in
+                    </button>
+                  </>
+                )}
               </p>
             </>
           )}
