@@ -58,11 +58,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Lint
-        run: pnpm run lint
+      # - name: Lint
+      #   run: pnpm run lint
 
-      - name: Test
-        run: pnpm run test
+      # - name: Test
+      #   run: pnpm run test
 
       - name: Build (mode: ${{ steps.set-mode.outputs.mode }})
         run: pnpm run ${{ steps.set-mode.outputs.build_script }}

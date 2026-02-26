@@ -36,14 +36,14 @@ export function useAuth(): UseAuthReturn {
     (role: AuthRole): boolean => {
       return user?.roles ? includes(user.roles, role) : false
     },
-    [user?.roles],
+    [user],
   )
 
   const hasAnyRole = useCallback(
     (roles: readonly AuthRole[]): boolean => {
       return user?.roles ? some(roles, (role) => includes(user.roles, role)) : false
     },
-    [user?.roles],
+    [user],
   )
 
   return {
