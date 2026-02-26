@@ -1,4 +1,6 @@
 export { useAuth, type UseAuthReturn } from '@/hooks/useAuth'
+export { useAuthThunks } from '@/hooks/useAuthThunks'
+export { useAuthMutations } from '@/hooks/useAuthMutations'
 export { useLoginRedirect } from '@/hooks/useLoginRedirect'
 export { useMeQuery } from '@/hooks/useMeQuery'
 export { useSocket } from '@/hooks/useSocket'

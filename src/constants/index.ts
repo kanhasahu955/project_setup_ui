@@ -20,6 +20,13 @@ function getDefaultSocketUrl(): string {
   }
 }
 const DEFAULT_SOCKET_URL = getDefaultSocketUrl()
+/** Resolve REST API base URL from env (e.g. http://localhost:8000/api/v1). */
+function resolveApiUrl(): string {
+  const base = import.meta.env[ENV_BASE_URL]
+  if (base && typeof base === "string") return base.replace(/\/$/, "")
+  return DEFAULT_BASE_URL.replace(/\/$/, "")
+}
+
 const DEFAULT_TIMEOUT_MS = 15_000
 const FALLBACK_ERROR_MESSAGE = "Something went wrong. Please try again."
 const DEFAULT_JSON_HEADERS = {
@@ -60,6 +67,7 @@ export {
   ENV_SOCKET_URL,
   DEFAULT_SOCKET_URL,
   resolveSocketUrl,
+  resolveApiUrl,
   DEFAULT_BASE_URL,
   DEFAULT_GRAPHQL_URL,
   resolveGraphQLUrl,

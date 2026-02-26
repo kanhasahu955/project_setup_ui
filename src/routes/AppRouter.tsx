@@ -5,6 +5,7 @@ import { AppLayout } from '@/layout/AppLayout'
 import { PublicRoute } from '@/routes/guards/PublicRoute'
 import { PrivateRoute } from '@/routes/guards/PrivateRoute'
 import { ProtectedRoute } from '@/routes/guards/ProtectedRoute'
+import { LoginRedirect } from './guards/LoginRedirect'
 import { PATHS } from '@/routes/paths'
 import { ROLES } from '@/@types/auth.type'
 import type { AuthRole } from '@/@types/auth.type'
@@ -45,27 +46,36 @@ export function AppRouter() {
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
+        {/* Auth screens: no header/footer layout */}
+        <Route
+          path={PATHS.LOGIN}
+          element={
+            <LoginRedirect>
+              <LoginPage />
+            </LoginRedirect>
+          }
+        />
+
         <Route element={<AppLayout />}>
-        <Route element={<PublicRoute />}>
-          <Route path={PATHS.HOME} element={<HomePage />} />
-          <Route path={PATHS.LOGIN} element={<LoginPage />} />
-          <Route path={PATHS.FORBIDDEN} element={<ForbiddenPage />} />
-        </Route>
-
-        <Route element={<PrivateRoute />}>
-          <Route path={PATHS.DASHBOARD} element={<DashboardPage />} />
-        </Route>
-
-        {map(protectedRoutes, ({ path, allowedRoles, Element }) => (
-          <Route
-            key={path}
-            element={<ProtectedRoute allowedRoles={allowedRoles} />}
-          >
-            <Route path={path} element={<Element />} />
+          <Route element={<PublicRoute />}>
+            <Route path={PATHS.FORBIDDEN} element={<ForbiddenPage />} />
           </Route>
-        ))}
 
-        <Route path="*" element={<Navigate to={PATHS.HOME} replace />} />
+          <Route element={<PrivateRoute />}>
+            <Route path={PATHS.HOME} element={<HomePage />} />
+            <Route path={PATHS.DASHBOARD} element={<DashboardPage />} />
+          </Route>
+
+          {map(protectedRoutes, ({ path, allowedRoles, Element }) => (
+            <Route
+              key={path}
+              element={<ProtectedRoute allowedRoles={allowedRoles} />}
+            >
+              <Route path={path} element={<Element />} />
+            </Route>
+          ))}
+
+          <Route path="*" element={<Navigate to={PATHS.HOME} replace />} />
         </Route>
       </Routes>
     </Suspense>

@@ -1,7 +1,14 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { createContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { io } from "socket.io-client"
+import type { Socket } from "socket.io-client"
 import { resolveSocketUrl } from "@/constants"
-import { SocketContext, type SocketContextValue } from "./socketContext"
+
+export type SocketContextValue = {
+  socket: Socket | null
+  connected: boolean
+}
+
+export const SocketContext = createContext<SocketContextValue | null>(null)
 
 export function SocketProvider({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<SocketContextValue["socket"]>(null)
