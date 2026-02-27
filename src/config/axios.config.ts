@@ -53,6 +53,9 @@ function normalizeError(error: AxiosError<{ message?: string }>): ApiErrorPayloa
 }
 
 function onRequestFulfilled(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
+    if (config.data instanceof FormData) {
+        delete config.headers["Content-Type"]
+    }
     return config
 }
 

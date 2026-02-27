@@ -113,6 +113,7 @@ export function ListingsPage() {
             <ul className="space-y-3">
               {list.map((item) => {
                 const primaryImage = item.images?.find((i) => i.isPrimary) ?? item.images?.[0]
+                const imageCount = item.images?.length ?? 0
                 return (
                   <li key={item.id}>
                     <Link
@@ -120,15 +121,24 @@ export function ListingsPage() {
                       className="block rounded-xl bg-slate-900/70 border border-slate-800 p-4 hover:border-slate-700 transition-colors"
                     >
                       <div className="flex gap-4">
-                        {primaryImage && (
-                          <div className="w-24 h-24 rounded-lg bg-slate-800 shrink-0 overflow-hidden">
+                        <div className="w-28 h-28 rounded-lg bg-slate-800 shrink-0 overflow-hidden relative">
+                          {primaryImage ? (
                             <img
                               src={primaryImage.url}
-                              alt=""
+                              alt={item.title}
                               className="w-full h-full object-cover"
                             />
-                          </div>
-                        )}
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-500">
+                              <span className="text-xs">No image</span>
+                            </div>
+                          )}
+                          {imageCount > 1 && (
+                            <span className="absolute bottom-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">
+                              {imageCount} photos
+                            </span>
+                          )}
+                        </div>
                         <div className="min-w-0 flex-1">
                           <h2 className="font-medium text-white truncate">{item.title}</h2>
                           <p className="text-slate-400 text-sm mt-0.5">
