@@ -1,7 +1,10 @@
 const ENV_BASE_URL = "VITE_API_BASE_URL"
 const ENV_GRAPHQL_URL = "VITE_GRAPHQL_URL"
 const ENV_SOCKET_URL = "VITE_SOCKET_URL"
+const ENV_AI_API_URL = "VITE_AI_API_URL"
 const DEFAULT_BASE_URL = "http://localhost:8000/api/v1"
+/** In dev, use /ai-api so Vite proxy forwards to python_backend (e.g. localhost:8001). */
+const DEFAULT_AI_API_BASE = typeof window !== "undefined" && import.meta.env.DEV ? "/ai-api" : "http://localhost:8001"
 /** GraphQL endpoint (default: same origin as API, path /graphql). */
 function getDefaultGraphQLUrl(): string {
   try {
@@ -63,10 +66,31 @@ function resolveSocketUrl(): string {
   }
 }
 
+/** AI backend (Python FastAPI) base URL. Dev: /ai-api (proxied); prod: set VITE_AI_API_URL. */
+function resolveAiApiUrl(): string {
+  const env = import.meta.env[ENV_AI_API_URL]
+  if (env && typeof env === "string") return env.replace(/\/$/, "")
+  return DEFAULT_AI_API_BASE
+}
+
+/** WebSocket URL for AI chat stream (ws(s) from same host as AI API). Path: /ai/ws */
+function resolveAiWsUrl(): string {
+  const base = resolveAiApiUrl()
+  if (base.startsWith("http://")) return base.replace("http://", "ws://").replace(/\/$/, "") + "/ai/ws"
+  if (base.startsWith("https://")) return base.replace("https://", "wss://").replace(/\/$/, "") + "/ai/ws"
+  // Relative path (e.g. /ai-api in dev): use current origin with ws(s) scheme
+  const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost:3000"
+  const wsOrigin = origin.startsWith("https") ? origin.replace("https://", "wss://") : origin.replace("http://", "ws://")
+  return `${wsOrigin}${base.startsWith("/") ? "" : "/"}${base.replace(/\/$/, "")}/ai/ws`
+}
+
 export {
   ENV_BASE_URL,
   ENV_GRAPHQL_URL,
   ENV_SOCKET_URL,
+  ENV_AI_API_URL,
+  resolveAiApiUrl,
+  resolveAiWsUrl,
   DEFAULT_SOCKET_URL,
   resolveSocketUrl,
   resolveApiUrl,

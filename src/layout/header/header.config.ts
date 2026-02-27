@@ -10,5 +10,6 @@ export const HEADER_NAV_ITEMS: readonly NavItem[] = [
   { key: "dashboard", label: "Dashboard", path: PATHS.DASHBOARD, authRequired: true },
   { key: "listings", label: "Listings", path: PATHS.LISTINGS, authRequired: true },
   { key: "chat", label: "Chat", path: PATHS.CHAT, authRequired: true },
+  { key: "assistant", label: "AI Assistant", path: PATHS.ASSISTANT, authRequired: true },
   { key: "admin", label: "Admin", path: PATHS.ADMIN, authRequired: true, roles: [ROLES.ADMIN] },
 ] as const

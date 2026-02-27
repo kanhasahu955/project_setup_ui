@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiBaseUrl = env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/v1'
   const apiOrigin = new URL(apiBaseUrl).origin
+  const aiApiOrigin = env.VITE_AI_API_URL ?? 'http://localhost:8001'
   const appVersion = process.env.VITE_APP_VERSION ?? env.VITE_APP_VERSION ?? pkg.version
 
   return {
@@ -42,6 +43,13 @@ export default defineConfig(({ mode }) => {
           target: apiOrigin,
           changeOrigin: true,
           secure: false,
+        },
+        '/ai-api': {
+          target: aiApiOrigin,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/ai-api/, ''),
         },
       },
     },
