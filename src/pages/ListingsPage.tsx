@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom'
+import { Modal } from 'antd'
+import { useAppDispatch } from '@/store/hooks'
+import { deleteListing as deleteListingThunk } from '@/store/actions/listing.action'
+import { toastStore } from '@/store/toast.store'
 import { SEO } from '@/components/SEO'
+import { StarRatingDisplay } from '@/components/listing'
 import { PATHS, pathListingDetail, pathListingEdit } from '@/routes/paths'
 import { LISTINGS } from '@/graphql/operations'
 import type { ListingListInput } from '@/@types/listing.type'
 import { useQuery } from '@apollo/client/react'
 
 export function ListingsPage() {
+  const dispatch = useAppDispatch()
   const input: ListingListInput = { page: 1, limit: 20 }
   type ListingsResult = {
     data: Array<{
@@ -21,16 +27,20 @@ export function ListingsPage() {
       bedrooms?: number
       bathrooms?: number
       area?: number
+      favoritesCount?: number
+      isFavoritedByMe?: boolean
+      averageRating?: number | null
+      totalRatings?: number | null
       images?: Array<{ id: string; url: string; isPrimary: boolean }>
     }>
     pagination: { total: number; page: number; totalPages: number }
   }
-  const { data, loading, error } = useQuery<{
+  const { data, loading, error, refetch } = useQuery<{
     listings?: ListingsResult
     data?: { listings?: ListingsResult }
   }>(LISTINGS, {
     variables: { input },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
   })
 
   // Support both standard Apollo shape (data.listings) and double-wrapped (data.data.listings)
@@ -38,6 +48,28 @@ export function ListingsPage() {
   const rawData = listingsResult?.data
   const list = Array.isArray(rawData) ? rawData : []
   const pagination = listingsResult?.pagination
+
+  const handleDelete = (listingId: string, title: string) => {
+    Modal.confirm({
+      title: 'Delete this listing?',
+      content: `Are you sure you want to delete “${title}”? This action cannot be undone.`,
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      centered: true,
+      onOk: () =>
+        dispatch(deleteListingThunk(listingId))
+          .unwrap()
+          .then((res) => {
+            toastStore.getState().showSuccess(res.message ?? 'Listing deleted.')
+            void refetch()
+          })
+          .catch((msg: unknown) => {
+            const message = typeof msg === 'string' ? msg : 'Failed to delete listing'
+            toastStore.getState().showError(message)
+          }),
+    })
+  }
 
   return (
     <>
@@ -106,10 +138,25 @@ export function ListingsPage() {
                             ₹ {item.price.toLocaleString()}
                             {item.area != null && ` · ${item.area} sqft`}
                           </p>
-                          <span className="inline-block mt-2 text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded">
-                            {item.listingType} · {item.propertyType}
-                            {item.bedrooms != null && ` · ${item.bedrooms} BHK`}
-                          </span>
+                          {(item.averageRating != null || (item.totalRatings != null && item.totalRatings > 0)) && (
+                            <StarRatingDisplay
+                              rating={item.averageRating ?? undefined}
+                              totalRatings={item.totalRatings ?? undefined}
+                              size="sm"
+                              className="mt-0.5"
+                            />
+                          )}
+                          <div className="flex items-center gap-2 mt-2">
+                            <span className="inline-block text-xs text-slate-500 bg-slate-800 px-2 py-0.5 rounded">
+                              {item.listingType} · {item.propertyType}
+                              {item.bedrooms != null && ` · ${item.bedrooms} BHK`}
+                            </span>
+                            {(item.favoritesCount != null && item.favoritesCount > 0) && (
+                              <span className="text-slate-500 text-xs" title="Favorites">
+                                {item.isFavoritedByMe ? '❤️' : '🤍'} {item.favoritesCount}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </Link>
@@ -120,6 +167,13 @@ export function ListingsPage() {
                       >
                         Edit
                       </Link>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(item.id, item.title)}
+                        className="text-xs text-red-500 hover:text-red-400"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </li>
                 )

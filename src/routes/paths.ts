@@ -9,6 +9,7 @@ export const PATHS = {
   LISTINGS_CREATE: '/listings/create',
   LISTING_DETAIL: '/listings/:id',
   LISTING_EDIT: '/listings/:id/edit',
+  CHAT: '/chat',
 } as const
 
 /** Build listing detail path (replace :id). */

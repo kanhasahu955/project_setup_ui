@@ -1,0 +1,14 @@
+query ListingComments($listingId: ID!) {
+  listingComments(listingId: $listingId) {
+    id
+    listingId
+    userId
+    content
+    createdAt
+    user {
+      id
+      name
+      email
+    }
+  }
+}

@@ -1,0 +1,6 @@
+mutation AddListingFavorite($listingId: ID!) {
+  addListingFavorite(listingId: $listingId) {
+    success
+    message
+  }
+}

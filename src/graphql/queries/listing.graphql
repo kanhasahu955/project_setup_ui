@@ -32,6 +32,12 @@ query Listing($id: ID!) {
     clicks
     ownerId
     projectId
+    favoritesCount
+    isFavoritedByMe
+    averageRating
+    totalRatings
+    isRatedByMe
+    myRating
     createdAt
     updatedAt
     images {

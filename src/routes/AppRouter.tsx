@@ -31,6 +31,7 @@ const EditListingPage = lazy(() =>
 const ListingDetailPage = lazy(() =>
   import('@/pages/ListingDetailPage').then((m) => ({ default: m.ListingDetailPage })),
 )
+const ChatPage = lazy(() => import('@/pages/ChatPage').then((m) => ({ default: m.ChatPage })))
 
 function RouteFallback() {
   return (
@@ -80,6 +81,7 @@ export function AppRouter() {
             <Route path={PATHS.LISTINGS_CREATE} element={<CreateListingPage />} />
             <Route path={PATHS.LISTING_DETAIL} element={<ListingDetailPage />} />
             <Route path={PATHS.LISTING_EDIT} element={<EditListingPage />} />
+            <Route path={PATHS.CHAT} element={<ChatPage />} />
           </Route>
 
           {map(protectedRoutes, ({ path, allowedRoles, Element }) => (

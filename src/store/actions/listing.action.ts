@@ -18,10 +18,11 @@ export const createListing = createAsyncThunk<
       const result = await client.mutate({
         mutation: CREATE_LISTING,
         variables: { input },
+        fetchPolicy: "no-cache",
         refetchQueries: [{ query: LISTINGS, variables: { input: { page: 1, limit: 20 } } }],
       })
-      const data = result.data as { createListing?: Listing } | undefined
-      const listing = data?.createListing
+      const root = result.data as { createListing?: Listing; data?: { createListing?: Listing } } | undefined
+      const listing = root?.data?.createListing ?? root?.createListing
       if (result.errors?.length || !listing) {
         return rejectWithValue(
           (result.errors?.[0] as { message?: string })?.message ?? "Failed to create listing"
@@ -76,9 +77,12 @@ export const deleteListing = createAsyncThunk<
       const result = await client.mutate({
         mutation: DELETE_LISTING,
         variables: { id },
+        fetchPolicy: "no-cache",
       })
-      const data = result.data as { deleteListing?: { success: boolean; message: string } } | undefined
-      const res = data?.deleteListing
+      const root = result.data as
+        | { deleteListing?: { success: boolean; message: string }; data?: { deleteListing?: { success: boolean; message: string } } }
+        | undefined
+      const res = root?.data?.deleteListing ?? root?.deleteListing
       if (result.errors?.length || !res?.success) {
         return rejectWithValue(
           (result.errors?.[0] as { message?: string })?.message ?? res?.message ?? "Failed to delete listing"

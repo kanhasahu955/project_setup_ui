@@ -71,6 +71,7 @@ export const register = createAsyncThunk<
       const result = await client.mutate({
         mutation: REGISTER,
         variables: { input },
+        fetchPolicy: "no-cache",
       })
       const res = getMutationPayload<RegisterMutationPayload>(result.data, "register")
       if (hasGraphQLErrors(result)) {
@@ -97,7 +98,11 @@ export const verifyOtp = createAsyncThunk<
   async (input, { rejectWithValue }) => {
     try {
       const client = getApolloClient()
-      const result = await client.mutate({ mutation: VERIFY_OTP, variables: { input } })
+      const result = await client.mutate({
+        mutation: VERIFY_OTP,
+        variables: { input },
+        fetchPolicy: "no-cache",
+      })
       const res = getMutationPayload<LoginMutationPayload>(result.data, "verifyOtp")
       if (hasGraphQLErrors(result)) {
         return rejectWithValue(getGraphQLErrorMessage(result, "Verification failed"))
@@ -120,7 +125,11 @@ export const resendOtp = createAsyncThunk<
   async (input, { rejectWithValue }) => {
     try {
       const client = getApolloClient()
-      const result = await client.mutate({ mutation: RESEND_OTP, variables: { input } })
+      const result = await client.mutate({
+        mutation: RESEND_OTP,
+        variables: { input },
+        fetchPolicy: "no-cache",
+      })
       const res = getMutationPayload<ResendOtpMutationPayload>(result.data, "resendOtp")
       if (hasGraphQLErrors(result)) {
         return rejectWithValue(getGraphQLErrorMessage(result, "Failed to resend OTP"))
@@ -146,7 +155,11 @@ export const login = createAsyncThunk<
   async (input, { rejectWithValue }) => {
     try {
       const client = getApolloClient()
-      const result = await client.mutate({ mutation: LOGIN, variables: { input } })
+      const result = await client.mutate({
+        mutation: LOGIN,
+        variables: { input },
+        fetchPolicy: "no-cache",
+      })
       const res = getMutationPayload<LoginMutationPayload>(result.data, "login")
       if (hasGraphQLErrors(result)) {
         return rejectWithValue(getGraphQLErrorMessage(result, "Login failed"))

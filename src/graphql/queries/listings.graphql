@@ -22,6 +22,10 @@ query Listings($input: ListingListInput) {
       views
       clicks
       ownerId
+      favoritesCount
+      isFavoritedByMe
+      averageRating
+      totalRatings
       createdAt
       updatedAt
       images {

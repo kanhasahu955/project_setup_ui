@@ -1,0 +1,6 @@
+mutation RemoveListingFavorite($listingId: ID!) {
+  removeListingFavorite(listingId: $listingId) {
+    success
+    message
+  }
+}

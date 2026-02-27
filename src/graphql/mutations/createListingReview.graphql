@@ -1,0 +1,14 @@
+mutation CreateListingReview($listingId: ID!, $rating: Int!, $comment: String) {
+  createListingReview(listingId: $listingId, rating: $rating, comment: $comment) {
+    id
+    listingId
+    userId
+    rating
+    comment
+    createdAt
+    user {
+      id
+      name
+    }
+  }
+}

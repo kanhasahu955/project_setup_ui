@@ -1,0 +1,6 @@
+mutation DeleteListingComment($id: ID!) {
+  deleteListingComment(id: $id) {
+    success
+    message
+  }
+}

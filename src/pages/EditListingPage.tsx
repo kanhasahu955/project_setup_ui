@@ -174,15 +174,16 @@ export function EditListingPage() {
         canonical={pathListingEdit(id)}
         noIndex
       />
-      <div className="min-h-screen bg-slate-950 text-slate-50">
+      <div className="min-h-screen bg-slate-50 text-slate-900">
         <div className="max-w-xl mx-auto px-4 py-8">
-          <h1 className="text-xl font-semibold mb-6">Edit listing</h1>
-          <section className="rounded-xl bg-slate-900/70 border border-slate-800 p-6">
+          <h1 className="text-xl font-semibold mb-6 text-slate-900">Edit listing</h1>
+          <section className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
             <Form
               form={form}
               layout="vertical"
               requiredMark={false}
               onFinish={onFinish}
+              className="[&_.ant-form-item-label>label]:text-slate-700"
             >
               <FormField
                 label="Title"

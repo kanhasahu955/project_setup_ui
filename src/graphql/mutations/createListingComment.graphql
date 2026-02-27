@@ -1,0 +1,14 @@
+mutation CreateListingComment($listingId: ID!, $content: String!) {
+  createListingComment(listingId: $listingId, content: $content) {
+    id
+    listingId
+    userId
+    content
+    createdAt
+    user {
+      id
+      name
+      email
+    }
+  }
+}

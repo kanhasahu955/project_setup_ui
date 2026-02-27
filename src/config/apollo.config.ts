@@ -51,10 +51,38 @@ export function createApolloClient(getToken: GetToken): ApolloClient<unknown> {
     link: from([authLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
-        // Allow mutation results (e.g. createListing) to be written without "Missing field" errors
+        Query: {
+          fields: {
+            listingReviews: { merge: (_: unknown, incoming: unknown) => incoming },
+            listingComments: { merge: (_: unknown, incoming: unknown) => incoming },
+            listing: { merge: (_: unknown, incoming: unknown) => incoming },
+            listings: { merge: (_: unknown, incoming: unknown) => incoming },
+            myListings: { merge: (_: unknown, incoming: unknown) => incoming },
+            myFavoriteListingIds: { merge: (_: unknown, incoming: unknown) => incoming },
+            me: { merge: (_: unknown, incoming: unknown) => incoming },
+            health: { merge: (_: unknown, incoming: unknown) => incoming },
+          },
+        },
+        // Allow mutation results to be written without "Missing field" errors
         Mutation: {
           merge(_, incoming) {
             return { ..._, ...incoming }
+          },
+          fields: {
+            createListing: { merge: (_: unknown, incoming: unknown) => incoming },
+            updateListing: { merge: (_: unknown, incoming: unknown) => incoming },
+            deleteListing: { merge: (_: unknown, incoming: unknown) => incoming },
+            createListingReview: { merge: (_: unknown, incoming: unknown) => incoming },
+            updateListingReview: { merge: (_: unknown, incoming: unknown) => incoming },
+            deleteListingReview: { merge: (_: unknown, incoming: unknown) => incoming },
+            createListingComment: { merge: (_: unknown, incoming: unknown) => incoming },
+            deleteListingComment: { merge: (_: unknown, incoming: unknown) => incoming },
+            addListingFavorite: { merge: (_: unknown, incoming: unknown) => incoming },
+            removeListingFavorite: { merge: (_: unknown, incoming: unknown) => incoming },
+            login: { merge: (_: unknown, incoming: unknown) => incoming },
+            register: { merge: (_: unknown, incoming: unknown) => incoming },
+            verifyOtp: { merge: (_: unknown, incoming: unknown) => incoming },
+            resendOtp: { merge: (_: unknown, incoming: unknown) => incoming },
           },
         },
       },
