@@ -19,6 +19,18 @@ const AdminPage = lazy(() => import('@/pages/AdminPage').then((m) => ({ default:
 const ForbiddenPage = lazy(() =>
   import('@/pages/ForbiddenPage').then((m) => ({ default: m.ForbiddenPage })),
 )
+const ListingsPage = lazy(() =>
+  import('@/pages/ListingsPage').then((m) => ({ default: m.ListingsPage })),
+)
+const CreateListingPage = lazy(() =>
+  import('@/pages/CreateListingPage').then((m) => ({ default: m.CreateListingPage })),
+)
+const EditListingPage = lazy(() =>
+  import('@/pages/EditListingPage').then((m) => ({ default: m.EditListingPage })),
+)
+const ListingDetailPage = lazy(() =>
+  import('@/pages/ListingDetailPage').then((m) => ({ default: m.ListingDetailPage })),
+)
 
 function RouteFallback() {
   return (
@@ -64,6 +76,10 @@ export function AppRouter() {
           <Route element={<PrivateRoute />}>
             <Route path={PATHS.HOME} element={<HomePage />} />
             <Route path={PATHS.DASHBOARD} element={<DashboardPage />} />
+            <Route path={PATHS.LISTINGS} element={<ListingsPage />} />
+            <Route path={PATHS.LISTINGS_CREATE} element={<CreateListingPage />} />
+            <Route path={PATHS.LISTING_DETAIL} element={<ListingDetailPage />} />
+            <Route path={PATHS.LISTING_EDIT} element={<EditListingPage />} />
           </Route>
 
           {map(protectedRoutes, ({ path, allowedRoles, Element }) => (

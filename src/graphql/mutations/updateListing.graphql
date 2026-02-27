@@ -1,0 +1,17 @@
+mutation UpdateListing($id: ID!, $input: UpdateListingInput!) {
+  updateListing(id: $id, input: $input) {
+    id
+    title
+    slug
+    description
+    price
+    listingType
+    propertyType
+    status
+    city
+    locality
+    state
+    ownerId
+    updatedAt
+  }
+}

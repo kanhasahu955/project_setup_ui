@@ -1,0 +1,55 @@
+query Listing($id: ID!) {
+  listing(id: $id) {
+    id
+    title
+    slug
+    description
+    price
+    pricePerSqft
+    listingType
+    propertyType
+    condition
+    status
+    bedrooms
+    bathrooms
+    balconies
+    floor
+    totalFloors
+    area
+    carpetArea
+    builtUpArea
+    furnishing
+    facing
+    city
+    locality
+    state
+    pincode
+    latitude
+    longitude
+    isVerified
+    isFeatured
+    views
+    clicks
+    ownerId
+    projectId
+    createdAt
+    updatedAt
+    images {
+      id
+      url
+      isPrimary
+      order
+    }
+    amenities {
+      id
+      amenityId
+      isHighlighted
+      amenity {
+        id
+        name
+        icon
+        category
+      }
+    }
+  }
+}

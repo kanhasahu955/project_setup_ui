@@ -1,0 +1,43 @@
+query Listings($input: ListingListInput) {
+  listings(input: $input) {
+    data {
+      id
+      title
+      slug
+      description
+      price
+      pricePerSqft
+      listingType
+      propertyType
+      condition
+      status
+      bedrooms
+      bathrooms
+      city
+      locality
+      state
+      area
+      isVerified
+      isFeatured
+      views
+      clicks
+      ownerId
+      createdAt
+      updatedAt
+      images {
+        id
+        url
+        isPrimary
+        order
+      }
+    }
+    pagination {
+      total
+      page
+      limit
+      totalPages
+      hasNext
+      hasPrev
+    }
+  }
+}

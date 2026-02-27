@@ -49,7 +49,16 @@ export function createApolloClient(getToken: GetToken): ApolloClient<unknown> {
 
   const client = new ApolloClientConstructor({
     link: from([authLink, httpLink]),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        // Allow mutation results (e.g. createListing) to be written without "Missing field" errors
+        Mutation: {
+          merge(_, incoming) {
+            return { ..._, ...incoming }
+          },
+        },
+      },
+    }),
     defaultOptions: {
       watchQuery: {
         fetchPolicy: "cache-and-network",
