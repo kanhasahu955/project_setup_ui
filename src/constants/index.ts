@@ -28,8 +28,8 @@ function resolveApiUrl(): string {
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000
-/** Longer timeout for production (e.g. Render cold start can take 30–60s). */
-const PRODUCTION_TIMEOUT_MS = 60_000
+/** Longer timeout for production (Render free tier cold start can take 50s+). */
+const PRODUCTION_TIMEOUT_MS = 90_000
 const FALLBACK_ERROR_MESSAGE = "Something went wrong. Please try again."
 const DEFAULT_JSON_HEADERS = {
     "Content-Type": "application/json",
@@ -39,10 +39,10 @@ const MULTIPART_OMIT_HEADER = "Content-Type" as const
 /** App version (from package.json or VITE_APP_VERSION / git tag at build time). */
 const APP_VERSION = (import.meta.env.VITE_APP_VERSION as string) ?? "0.0.0"
 
-/** Resolve GraphQL URL from env or API base origin + /graphql. */
+/** Resolve GraphQL URL from env or API base origin + /graphql. Avoid double /api/v1. */
 function resolveGraphQLUrl(): string {
   const env = import.meta.env[ENV_GRAPHQL_URL]
-  if (env && typeof env === "string") return env
+  if (env && typeof env === "string") return env.replace(/\/$/, "")
   const base = import.meta.env[ENV_BASE_URL] ?? DEFAULT_BASE_URL
   try {
     return new URL(base as string).origin + "/graphql"

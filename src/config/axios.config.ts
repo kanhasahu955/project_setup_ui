@@ -13,8 +13,16 @@ import { ENV_BASE_URL, DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS, PRODUCTION_TIMEOUT_
 /** In dev use relative path so Vite proxy is used and Network tab shows frontend URL. */
 const getBaseURL = (): string => {
     if (import.meta.env.DEV) return "/api/v1"
-    const url = firstDefined(import.meta.env[ENV_BASE_URL], DEFAULT_BASE_URL) as string
-    return url.replace(/\/$/, "")
+    const raw = firstDefined(import.meta.env[ENV_BASE_URL], DEFAULT_BASE_URL) as string
+    const trimmed = raw.replace(/\/$/, "")
+    // Avoid double /api/v1: use origin + single /api/v1 (fixes e.g. .../api/v1/api/v1/auth/register)
+    try {
+        const u = new URL(trimmed)
+        u.pathname = "/api/v1"
+        return u.toString()
+    } catch {
+        return trimmed
+    }
 }
 
 /** Production (e.g. Render) needs longer timeout for cold start; dev keeps 15s. */
